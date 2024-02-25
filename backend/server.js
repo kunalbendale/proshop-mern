@@ -1,29 +1,27 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import cors from 'cors';
-import products from './data/products.js';
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import connectDB from "./config/db.js";
+import productRoutes from "./routes/productRoutes.js";
+import {notFound, errorHandler} from './middleware/errorHandler.js'; 
 dotenv.config();
-
+// Connect to MongoDB
+connectDB();
 
 const port = process.env.PORT || 5000;
 
 const app = express();
 app.use(cors());
 
-
-app.get('/', (req, res) => {
-    res.send('API is Running');
+app.get("/", (req, res) => {
+  res.send("API is Running");
 });
 
-app.get('/api/products', (req, res) => {
-    res.send(products);
-});
+app.use("/api/products", productRoutes);
 
-app.get('/api/products/:id', (req, res) => {
-    const product = products.find(product => product._id === req.params.id);
-    res.send(product);
-});
+app.use(notFound);
+app.use(errorHandler);
 
 app.listen(port, () => {
-    console.log(`Listening on the ${port}`);
+  console.log(`Listening on the ${port}`);
 });
