@@ -17,6 +17,7 @@ app.use(cors());
 app.use("/api/products", productRoutes);
 
 if (process.env.NODE_ENV === "production") {
+  const __dirname = path.resolve();
   // set Static folder
   app.use(express.static(path.join(__dirname, "/frontend/build")));
 
@@ -25,6 +26,8 @@ if (process.env.NODE_ENV === "production") {
     res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
   );
 } else {
+  const __dirname = path.resolve();
+  app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
   app.get("/", (req, res) => {
     res.send("API is Running");
   });
